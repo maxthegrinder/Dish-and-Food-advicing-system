@@ -1,5 +1,4 @@
 # Food Recommendation and Classification System
-# System Rekomendacji i Klasyfikacji Potraw
 
 ## English
 
@@ -52,7 +51,7 @@ The project uses the **Food Ingredients and Recipe Dataset with Images** from Ka
 - Vadym Masliuk
 
 ---
-
+# System Rekomendacji i Klasyfikacji Potraw
 ## Polski
 
 ### Przegląd projektu
