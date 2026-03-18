@@ -15,7 +15,8 @@ This project has been heavily refactored from a procedural Jupyter Notebook into
 ### Directory Structure
 ```
 .
-├── main.py                     # Pipeline orchestrator
+├── main.py                     # Pipeline orchestrator (auto-installs dependencies)
+├── requirements.txt            # Project dependencies
 ├── Projekt.ipynb               # Presentation Notebook
 ├── README.md                   # Documentation
 └── src
@@ -37,15 +38,13 @@ This project has been heavily refactored from a procedural Jupyter Notebook into
 The project uses the **Food Ingredients and Recipe Dataset with Images** from Kaggle. During runtime, the dataset is automatically downloaded via the `kagglehub` library.
 
 ### How to Run
-1. Ensure you have the required dependencies installed:
-   ```bash
-   pip install pandas numpy matplotlib seaborn nltk scikit-learn tensorflow opencv-python kagglehub jupyter
-   ```
-2. You can run the entire pipeline directly from the terminal:
+1. Ensure you have Python installed. You do not need to manually install dependencies; `main.py` handles it automatically.
+2. Run the entire pipeline directly from the terminal:
    ```bash
    python main.py
    ```
-3. Alternatively, open `Projekt.ipynb` in Jupyter Notebook to run the pipeline interactively.
+   *Note: This will read `requirements.txt` and install any missing packages via `pip` before starting the machine learning pipeline.*
+3. Alternatively, you can explore the workflow interactively using `Projekt.ipynb` in Jupyter Notebook.
 
 ### Authors
 - Maksym Volchanskyi
@@ -67,7 +66,8 @@ Projekt został znacząco zrefaktoryzowany z proceduralnego notatnika Jupyter do
 ### Struktura Katalogów
 ```
 .
-├── main.py                     # Orkiestrator potoku
+├── main.py                     # Orkiestrator potoku (automatycznie instaluje zależności)
+├── requirements.txt            # Wymagane biblioteki
 ├── Projekt.ipynb               # Notatnik prezentacyjny
 ├── README.md                   # Dokumentacja
 └── src
@@ -89,15 +89,13 @@ Projekt został znacząco zrefaktoryzowany z proceduralnego notatnika Jupyter do
 Projekt wykorzystuje **Food Ingredients and Recipe Dataset with Images** z serwisu Kaggle. Podczas uruchamiania zestaw danych jest pobierany automatycznie.
 
 ### Jak uruchomić
-1. Zainstaluj wymagane pakiety:
-   ```bash
-   pip install pandas numpy matplotlib seaborn nltk scikit-learn tensorflow opencv-python kagglehub jupyter
-   ```
+1. Upewnij się, że masz zainstalowanego Pythona. Nie musisz ręcznie instalować zależności; `main.py` zrobi to automatycznie.
 2. Uruchom główny potok z terminala:
    ```bash
    python main.py
    ```
-3. Alternatywnie, uruchom plik `Projekt.ipynb` w środowisku Jupyter.
+   *Uwaga: Ten skrypt odczyta plik `requirements.txt` i zainstaluje brakujące pakiety przez `pip` przed rozpoczęciem pracy modelu sztucznej inteligencji.*
+3. Alternatywnie, możesz przeanalizować działanie kodu uruchamiając plik `Projekt.ipynb` w środowisku Jupyter.
 
 ### Autorzy
 - Maksym Volchanskyi
