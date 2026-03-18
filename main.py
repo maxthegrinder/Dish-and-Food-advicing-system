@@ -1,3 +1,14 @@
+import subprocess
+import sys
+import os
+
+print("Checking and installing dependencies from requirements.txt...")
+try:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt", "--quiet"])
+    print("Dependencies installed successfully!\n")
+except Exception as e:
+    print(f"Failed to install dependencies: {e}")
+
 import argparse
 import pandas as pd
 from sklearn.model_selection import train_test_split
