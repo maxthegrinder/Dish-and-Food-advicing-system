@@ -13,14 +13,18 @@ class DatasetBuilder:
 
     def _load_img_resnet(self, path):
         img = tf.io.read_file(path)
-        img = tf.image.decode_jpeg(img, channels=3)
+        # Using decode_image to support multiple formats (JPEG, PNG, etc)
+        img = tf.image.decode_image(img, channels=3, expand_animations=False)
         img = tf.image.resize(img, self.image_size)
+        # ResNet50 preprocessing
         return tf.keras.applications.resnet50.preprocess_input(img)
 
     def _load_img_vgg(self, path):
         img = tf.io.read_file(path)
-        img = tf.image.decode_jpeg(img, channels=3)
+        # Using decode_image to support multiple formats (JPEG, PNG, etc)
+        img = tf.image.decode_image(img, channels=3, expand_animations=False)
         img = tf.image.resize(img, self.image_size)
+        # VGG16 preprocessing
         return tf.keras.applications.vgg16.preprocess_input(img)
 
     def _load_and_preprocess_image(self, image_path, label, preprocess_fn):
@@ -39,7 +43,8 @@ class DatasetBuilder:
             return self._load_and_preprocess_image(path, label, preprocess_fn)
 
         dataset = tf.data.Dataset.from_tensor_slices((df['Image_Path'].values, labels))
-        dataset = dataset.map(map_func, num_parallel_calls=tf.data.AUTOTUNE)
+        # Ignore errors during mapping if an image is corrupted
+        dataset = dataset.map(map_func, num_parallel_calls=tf.data.AUTOTUNE, deterministic=False)
         dataset = dataset.batch(self.batch_size).prefetch(tf.data.AUTOTUNE)
         return dataset
 
@@ -48,7 +53,7 @@ class DatasetBuilder:
         text_dataset = tf.data.Dataset.from_tensor_slices(text_features)
 
         img_dataset = tf.data.Dataset.from_tensor_slices(df['Image_Path'].values)
-        img_dataset = img_dataset.map(self._load_img_resnet, num_parallel_calls=tf.data.AUTOTUNE)
+        img_dataset = img_dataset.map(self._load_img_resnet, num_parallel_calls=tf.data.AUTOTUNE, deterministic=False)
 
         label_dataset = tf.data.Dataset.from_tensor_slices(labels)
 

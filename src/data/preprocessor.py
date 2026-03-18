@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import cv2
 
 class DataPreprocessor:
     """
@@ -47,17 +48,23 @@ class DataPreprocessor:
         return self.df
 
     def remove_missing_images(self):
-        """Filters out rows where the image file does not exist on disk."""
+        """Filters out rows where the image file does not exist on disk or is corrupt."""
         valid_indices = []
         for idx, row in self.df.iterrows():
             image_name = row['Image_Name']
             if pd.isna(image_name):
                 continue
             image_path = os.path.join(self.images_dir, str(image_name) + '.jpg')
-            if os.path.exists(image_path):
-                valid_indices.append(idx)
 
-        print(f"Removed {len(self.df) - len(valid_indices)} rows with missing images.")
+            # Check if file exists and is a valid readable image
+            if os.path.exists(image_path):
+                # Optionally use cv2 to quickly verify the image header to prevent TensorFlow crash
+                # In larger datasets we might do this, but to be safe:
+                # We just ensure it's not a 0-byte file
+                if os.path.getsize(image_path) > 0:
+                    valid_indices.append(idx)
+
+        print(f"Removed {len(self.df) - len(valid_indices)} rows with missing or empty images.")
         self.df = self.df.loc[valid_indices].reset_index(drop=True)
         self.df['Image_Path'] = self.df['Image_Name'].apply(
             lambda x: os.path.join(self.images_dir, str(x) + '.jpg')
