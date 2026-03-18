@@ -49,6 +49,7 @@ class DataPreprocessor:
 
     def remove_missing_images(self):
         """Filters out rows where the image file does not exist on disk or is corrupt."""
+        print("Verifying image files (this might take a moment)...")
         valid_indices = []
         for idx, row in self.df.iterrows():
             image_name = row['Image_Name']
@@ -57,14 +58,17 @@ class DataPreprocessor:
             image_path = os.path.join(self.images_dir, str(image_name) + '.jpg')
 
             # Check if file exists and is a valid readable image
-            if os.path.exists(image_path):
-                # Optionally use cv2 to quickly verify the image header to prevent TensorFlow crash
-                # In larger datasets we might do this, but to be safe:
-                # We just ensure it's not a 0-byte file
-                if os.path.getsize(image_path) > 0:
-                    valid_indices.append(idx)
+            if os.path.exists(image_path) and os.path.getsize(image_path) > 0:
+                # Open with OpenCV to strictly verify the image header to prevent TensorFlow crash
+                # This is the safest way to ensure `decode_image` won't fail.
+                try:
+                    img = cv2.imread(image_path)
+                    if img is not None:
+                        valid_indices.append(idx)
+                except Exception:
+                    pass
 
-        print(f"Removed {len(self.df) - len(valid_indices)} rows with missing or empty images.")
+        print(f"Removed {len(self.df) - len(valid_indices)} rows with missing or corrupted images.")
         self.df = self.df.loc[valid_indices].reset_index(drop=True)
         self.df['Image_Path'] = self.df['Image_Name'].apply(
             lambda x: os.path.join(self.images_dir, str(x) + '.jpg')
